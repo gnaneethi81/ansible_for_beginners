@@ -1,0 +1,29 @@
+---
+- name: setup tomcat server
+  hosts: webservers
+  tasks:
+     - name: install java
+       yum:
+           name: java
+           state: installed
+     - name: download tomcat package
+       get_url:
+           url: https://ftp.wayne.edu/apache/tomcat/tomcat-8/v8.5.57/bin/apache-tomcat-8.5.57.tar.gz
+           dest: /opt
+
+     - name: untar apache packages
+       unarchive:
+              src: /opt/apache-tomcat-8.5.57.tar.gz
+              dest: /opt
+              remote_src: yes
+
+     - name: add execute permission on the startup.sh file
+       file:
+           path: /opt/apache-tomcat-8.5.57/bin/startup.sh
+           mode: 0777
+
+     - name: start the service
+       shell: nohup ./startup.sh
+       args:
+          chdir: /opt/apache-tomcat-8.5.57/bin
+
