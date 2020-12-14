@@ -1,0 +1,28 @@
+---
+- name: setup  Jenkin server
+  hosts: appservers
+  tasks:
+    - name: install java
+      yum:
+          name: java
+          state: installed
+
+    - name: setting up repofile
+      get_url:
+            url: https://pkg.jenkins.io/redhat/jenkins.repo
+            dest: /etc/yum.repos.d
+
+    - name: importing the a key from url
+      rpm_key:
+         state: present
+         key: https://pkg.jenkins.io/redhat/jenkins.io.key
+
+    - name: installing jenkins
+      yum:
+          name: jenkins
+          state: installed
+
+    - name: start jenkins
+      service:
+       name: jenkins
+       state: started
